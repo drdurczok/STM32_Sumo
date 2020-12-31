@@ -5,6 +5,8 @@
  *      Author: Damian
  */
 
+#include "stm32f4xx_hal.h"
+
 #ifndef INC_STM32_CONFIG_HPP_
 #define INC_STM32_CONFIG_HPP_
 

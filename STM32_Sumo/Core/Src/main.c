@@ -1,5 +1,6 @@
 #include "main.h"
-#include "STM32_Startup.cpp"
+
+#include "STM32/stm32_startup.cpp"
 
 int main(void) {
 	STM32_init();

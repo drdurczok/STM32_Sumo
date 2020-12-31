@@ -10,6 +10,5 @@
 
 void SystemClock_Config(void);
 void MX_GPIO_Init(void);
-void Error_Handler(void);
 
 #endif /* INC_STM32_STARTUP_HPP_ */

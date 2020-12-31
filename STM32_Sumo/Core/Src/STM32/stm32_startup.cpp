@@ -5,9 +5,9 @@
  *      Author: Damian
  */
 
-#include "../Inc/STM32_Startup.hpp"
-#include "../Inc/STM32_Config.hpp"
-#include "stm32f4xx_hal.h"
+#include <stm32_config.hpp>
+#include <stm32_startup.hpp>
+#include <stm32_handlers.hpp>
 
 void STM32_init(){
 	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
@@ -67,25 +67,3 @@ void MX_GPIO_Init(void){
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 	HAL_GPIO_Init(LED_GPIO_Port, &GPIO_InitStruct);
 }
-
-void Error_Handler(void){
-	/* User can add his own implementation to report the HAL error return state */
-	__disable_irq();
-	while (1){
-	}
-}
-
-#ifdef  USE_FULL_ASSERT
-/**
-  * @brief  Reports the name of the source file and the source line number
-  *         where the assert_param error has occurred.
-  * @param  file: pointer to the source file name
-  * @param  line: assert_param error line source number
-  * @retval None
-  */
-void assert_failed(uint8_t *file, uint32_t line){
-  /* User can add his own implementation to report the file name and line number,
-     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
-}
-#endif /* USE_FULL_ASSERT */
-
