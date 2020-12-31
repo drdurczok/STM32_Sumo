@@ -13,7 +13,7 @@ public:
 	Diagnostics();
 	virtual ~Diagnostics();
 
-	void Diagnostics::check_UART2();
+	void check_UART2();
 };
 
 #endif /* SRC_DIAGNOSTICS_H_ */

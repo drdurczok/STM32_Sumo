@@ -5,7 +5,7 @@
  *      Author: Damian
  */
 
-#include "Diagnostics.h"
+#include "../Inc/Diagnostics.hpp"
 
 Diagnostics::Diagnostics() {
 	// TODO Auto-generated constructor stub
