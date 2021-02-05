@@ -320,7 +320,7 @@ Text GLabel 8600 4700 0    50   Input ~ 0
 PC15
 Wire Wire Line
 	8750 4700 8600 4700
-Text Notes 8150 4750 0    50   ~ 0
+Text Notes 10550 4050 0    50   ~ 0
 LED
 $Comp
 L Device:C_Small C5
@@ -753,10 +753,6 @@ Text Notes 5750 2950 0    50   ~ 0
 Sharp FM
 Text Notes 5750 2650 0    50   ~ 0
 Sharp BM
-Text Notes 5750 2550 0    50   ~ 0
-UART2_RX
-Text Notes 5750 3150 0    50   ~ 0
-UART2_TX
 Text Notes 7450 3550 2    50   ~ 0
 UART1_TX
 Text GLabel 6350 3600 0    50   Input ~ 0
@@ -773,12 +769,8 @@ Text Notes 6100 3050 2    50   ~ 0
 Sharp FL
 Text GLabel 6850 3100 2    50   Input ~ 0
 PC6
-Text Notes 7050 3150 0    50   ~ 0
-UART6_TX
 Text GLabel 6850 3200 2    50   Input ~ 0
 PC7
-Text Notes 7450 3250 2    50   ~ 0
-UART6_RX
 Text GLabel 6350 3400 0    50   Input ~ 0
 PC2
 Text GLabel 6350 3300 0    50   Input ~ 0
@@ -1632,4 +1624,12 @@ Wire Wire Line
 	4350 1100 4200 1100
 Wire Wire Line
 	4200 1100 4200 1150
+Text Notes 5750 2550 0    50   ~ 0
+UART2_RX
+Text Notes 7450 3250 2    50   ~ 0
+UART6_RX
+Text Notes 5750 3150 0    50   ~ 0
+UART2_TX
+Text Notes 7050 3150 0    50   ~ 0
+UART6_TX
 $EndSCHEMATC

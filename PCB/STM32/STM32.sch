@@ -320,7 +320,7 @@ Text GLabel 8600 4700 0    50   Input ~ 0
 PC15
 Wire Wire Line
 	8750 4700 8600 4700
-Text Notes 8150 4750 0    50   ~ 0
+Text Notes 10550 4050 0    50   ~ 0
 LED
 $Comp
 L Device:C_Small C5
@@ -893,8 +893,6 @@ Text GLabel 8600 4100 0    50   Input ~ 0
 PC9
 Wire Wire Line
 	8750 4100 8600 4100
-Text GLabel 1600 5300 0    50   Input ~ 0
-PC15
 Text Notes 1150 5300 0    50   ~ 0
 LED
 $Comp
@@ -1632,4 +1630,6 @@ Text Notes 5750 3150 0    50   ~ 0
 UART2_TX
 Text Notes 7050 3150 0    50   ~ 0
 UART6_TX
+Text GLabel 1600 5300 0    50   Input ~ 0
+PB7
 $EndSCHEMATC
