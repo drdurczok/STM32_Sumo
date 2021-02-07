@@ -163,17 +163,17 @@ Text GLabel 4750 1050 0    50   Input ~ 0
 PA3
 Wire Wire Line
 	4900 1400 4750 1400
-Text GLabel 4750 1400 0    50   Input ~ 0
+Text GLabel 4750 1500 0    50   Input ~ 0
 PC7
 Wire Wire Line
 	4900 950  4750 950 
 Text Notes 650  1050 0    50   ~ 0
 UART1_TX
-Text Notes 4150 1450 0    50   ~ 0
+Text Notes 4150 1550 0    50   ~ 0
 UART6_RX
 Wire Wire Line
 	4900 1050 4750 1050
-Text GLabel 4750 1500 0    50   Input ~ 0
+Text GLabel 4750 1400 0    50   Input ~ 0
 PC6
 Text Notes 4550 1000 2    50   ~ 0
 UART2_TX
@@ -183,7 +183,7 @@ Text GLabel 4750 950  0    50   Input ~ 0
 PA2
 Text Notes 650  1150 0    50   ~ 0
 UART1_RX
-Text Notes 4150 1550 0    50   ~ 0
+Text Notes 4150 1450 0    50   ~ 0
 UART6_TX
 Text Notes 4550 1100 2    50   ~ 0
 UART2_RX

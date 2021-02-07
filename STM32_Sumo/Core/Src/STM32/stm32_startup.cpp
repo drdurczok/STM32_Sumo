@@ -7,9 +7,12 @@
 
 #include <stm32_startup.hpp>
 
+TIM_HandleTypeDef htim4;				// Timer 4 handle.
+
 UART_HandleTypeDef huart2;				// TX - PA2  RX - PA3
 UART_HandleTypeDef huart6;				// TX - PC6  RX - PC7
 UART_HandleTypeDef huart1;				// TX - PA9  RX - PA10
+
 
 void STM32_init(){
 	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
@@ -22,6 +25,9 @@ void STM32_init(){
 	MX_USART1_UART_Init();
 	MX_USART2_UART_Init();
 	MX_USART6_UART_Init();
+
+	WS2812B_init();
+	PixelsInit();
 }
 
 void SystemClock_Config(void){
@@ -34,10 +40,23 @@ void SystemClock_Config(void){
 
 	// Initializes the RCC Oscillators according to the specified parameters
 	// in the RCC_OscInitTypeDef structure.
+	/*
 	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
 	RCC_OscInitStruct.HSIState = RCC_HSI_ON;
 	RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;*/
+
+	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+	RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+	RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+	//SYSCLK = 84MHz, APB1 = 42MHz, APB2 = 84MHz
+	RCC_OscInitStruct.PLL.PLLM = 16;
+	RCC_OscInitStruct.PLL.PLLN = 336;
+	RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;
+	RCC_OscInitStruct.PLL.PLLQ = 4;
+
 	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK){
 		Error_Handler();
 	}
@@ -46,9 +65,9 @@ void SystemClock_Config(void){
 	RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
 							  |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
 	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
-	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
-	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1; //1
+	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4; //1
+	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2; //1
 
 	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK){
 		Error_Handler();
@@ -56,20 +75,13 @@ void SystemClock_Config(void){
 }
 
 void MX_GPIO_Init(void){
-	GPIO_InitTypeDef GPIO_InitStruct = {0};
+	//GPIO_InitTypeDef GPIO_InitStruct = {0};
 
 	/* GPIO Ports Clock Enable */
-	__HAL_RCC_GPIOA_CLK_ENABLE();
+	//__HAL_RCC_GPIOA_CLK_ENABLE();
+	//__HAL_RCC_GPIOB_CLK_ENABLE();
+	//__HAL_RCC_GPIOC_CLK_ENABLE();
 
-	/*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
-
-	/*Configure GPIO pin : LED_Pin */
-	GPIO_InitStruct.Pin = LED_Pin;
-	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-	HAL_GPIO_Init(LED_GPIO_Port, &GPIO_InitStruct);
 }
 
 
@@ -114,3 +126,174 @@ void MX_USART6_UART_Init(void){
 		Error_Handler();
 	}
 }
+
+/*-----------------------------------------------------------------------*/
+/*---------------------------Pixel Startup-------------------------------*/
+/*-----------------------------------------------------------------------*/
+extern uint32_t tim_period;
+extern uint32_t timer_reset_pulse_period;
+extern uint32_t WS2812_IO_High[];
+extern uint32_t WS2812_IO_Low[];
+extern uint16_t ws2812bDmaBitBuffer[24 * 2];
+#define BUFFER_SIZE	  (sizeof(ws2812bDmaBitBuffer)/sizeof(uint16_t))
+
+void Pixel_GPIO_Init(void);
+static void TIM1_init(void);
+static void DMA2_init(void);
+
+void WS2812B_init(){
+	Pixel_GPIO_Init();
+
+	DMA2_init();
+	TIM1_init();
+
+}
+
+void Pixel_GPIO_Init(void){
+	GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+	/* GPIO Ports Clock Enable */
+	__HAL_RCC_GPIOC_CLK_ENABLE();
+
+	/* WS2812B output */
+	GPIO_InitStruct.Pin       = WS2812B_Pin;
+	GPIO_InitStruct.Mode      = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull      = GPIO_NOPULL;
+	GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init(WS2812B_Port, &GPIO_InitStruct);
+}
+
+TIM_HandleTypeDef  TIM1_handle;
+TIM_OC_InitTypeDef tim2OC1;
+TIM_OC_InitTypeDef tim2OC2;
+
+
+static void TIM1_init(void){
+	// TIM2 Peripheral clock enable
+	__HAL_RCC_TIM1_CLK_ENABLE();
+
+	tim_period =  SystemCoreClock / 800000; // 0,125us period (10 times lower the 1,25us period to have fixed math below)
+	timer_reset_pulse_period = (SystemCoreClock / (320 * 60)); // 60us just to be sure
+
+	uint32_t cc1 = (10 * tim_period) / 36;
+	uint32_t cc2 = (10 * tim_period) / 15;
+
+	TIM1_handle.Instance = TIM1;
+
+	TIM1_handle.Init.Period            = tim_period;
+	TIM1_handle.Init.RepetitionCounter = 0;
+	TIM1_handle.Init.Prescaler         = 0;
+	TIM1_handle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
+	TIM1_handle.Init.CounterMode       = TIM_COUNTERMODE_UP;
+	HAL_TIM_PWM_Init(&TIM1_handle);
+
+	HAL_NVIC_SetPriority(TIM1_UP_TIM10_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ(TIM1_UP_TIM10_IRQn);
+
+	tim2OC1.OCMode       = TIM_OCMODE_PWM1;
+	tim2OC1.OCPolarity   = TIM_OCPOLARITY_HIGH;
+	tim2OC1.Pulse        = cc1;
+	tim2OC1.OCNPolarity  = TIM_OCNPOLARITY_HIGH;
+	tim2OC1.OCFastMode   = TIM_OCFAST_DISABLE;
+	HAL_TIM_PWM_ConfigChannel(&TIM1_handle, &tim2OC1, TIM_CHANNEL_1);
+
+	tim2OC2.OCMode       = TIM_OCMODE_PWM1;
+	tim2OC2.OCPolarity   = TIM_OCPOLARITY_HIGH;
+	tim2OC2.Pulse        = cc2;
+	tim2OC2.OCNPolarity  = TIM_OCNPOLARITY_HIGH;
+	tim2OC2.OCFastMode   = TIM_OCFAST_DISABLE;
+	tim2OC2.OCIdleState  = TIM_OCIDLESTATE_RESET;
+	tim2OC2.OCNIdleState = TIM_OCNIDLESTATE_RESET;
+	HAL_TIM_PWM_ConfigChannel(&TIM1_handle, &tim2OC2, TIM_CHANNEL_2);
+
+
+	HAL_TIM_Base_Start(&TIM1_handle);
+	HAL_TIM_PWM_Start(&TIM1_handle, TIM_CHANNEL_1);
+
+	__HAL_TIM_DISABLE(&TIM1_handle);
+}
+
+
+DMA_HandleTypeDef     dmaUpdate;
+DMA_HandleTypeDef     dmaCC1;
+DMA_HandleTypeDef     dmaCC2;
+
+static void DMA2_init(void){
+	// TIM2 Update event
+	__HAL_RCC_DMA2_CLK_ENABLE();
+
+	dmaUpdate.Init.Direction = DMA_MEMORY_TO_PERIPH;
+	dmaUpdate.Init.PeriphInc = DMA_PINC_DISABLE;
+	dmaUpdate.Init.MemInc = DMA_MINC_DISABLE;
+	dmaUpdate.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
+	dmaUpdate.Init.MemDataAlignment = DMA_MDATAALIGN_WORD;
+	dmaUpdate.Init.Mode = DMA_CIRCULAR;
+	dmaUpdate.Init.Priority = DMA_PRIORITY_VERY_HIGH;
+	dmaUpdate.Init.Channel = DMA_CHANNEL_6;
+
+	dmaUpdate.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
+	dmaUpdate.Init.FIFOThreshold = DMA_FIFO_THRESHOLD_FULL;
+	dmaUpdate.Init.MemBurst = DMA_MBURST_SINGLE;
+	dmaUpdate.Init.PeriphBurst = DMA_PBURST_SINGLE;
+
+	dmaUpdate.Instance = DMA2_Stream5;
+
+	HAL_DMA_DeInit(&dmaUpdate);
+	HAL_DMA_Init(&dmaUpdate);
+	HAL_DMA_Start(&dmaUpdate, (uint32_t)WS2812_IO_High, (uint32_t)(&WS2812B_Port->BSRR), BUFFER_SIZE);
+
+	// TIM2 CC1 event
+	dmaCC1.Init.Direction = DMA_MEMORY_TO_PERIPH;
+	dmaCC1.Init.PeriphInc = DMA_PINC_DISABLE;
+	dmaCC1.Init.MemInc = DMA_MINC_ENABLE;
+	dmaCC1.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
+	dmaCC1.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
+	dmaCC1.Init.Mode = DMA_CIRCULAR;
+	dmaCC1.Init.Priority = DMA_PRIORITY_VERY_HIGH;
+	dmaCC1.Init.Channel = DMA_CHANNEL_6;
+
+	dmaCC1.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
+	dmaCC1.Init.FIFOThreshold = DMA_FIFO_THRESHOLD_FULL;
+	dmaCC1.Init.MemBurst = DMA_MBURST_SINGLE;
+	dmaCC1.Init.PeriphBurst = DMA_PBURST_SINGLE;
+
+	dmaCC1.Instance = DMA2_Stream1;
+
+	HAL_DMA_DeInit(&dmaCC1);
+	HAL_DMA_Init(&dmaCC1);
+	HAL_DMA_Start(&dmaCC1, (uint32_t)ws2812bDmaBitBuffer, (uint32_t)(&WS2812B_Port->BSRR) + 2, BUFFER_SIZE); //BRR
+
+
+	// TIM2 CC2 event
+	dmaCC2.Init.Direction = DMA_MEMORY_TO_PERIPH;
+	dmaCC2.Init.PeriphInc = DMA_PINC_DISABLE;
+	dmaCC2.Init.MemInc = DMA_MINC_DISABLE;
+	dmaCC2.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
+	dmaCC2.Init.MemDataAlignment = DMA_MDATAALIGN_WORD;
+	dmaCC2.Init.Mode = DMA_CIRCULAR;
+	dmaCC2.Init.Priority = DMA_PRIORITY_VERY_HIGH;
+	dmaCC2.Init.Channel = DMA_CHANNEL_6;
+
+	dmaCC2.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
+	dmaCC2.Init.FIFOThreshold = DMA_FIFO_THRESHOLD_FULL;
+	dmaCC2.Init.MemBurst = DMA_MBURST_SINGLE;
+	dmaCC2.Init.PeriphBurst = DMA_PBURST_SINGLE;
+
+	dmaCC2.Instance = DMA2_Stream2;
+
+	HAL_DMA_DeInit(&dmaCC2);
+
+	dmaCC2.XferCpltCallback  = DMA_TransferCompleteHandler;
+	dmaCC2.XferHalfCpltCallback = DMA_TransferHalfHandler;
+	dmaCC2.XferErrorCallback = DMA_TransferError;
+
+	HAL_DMA_Init(&dmaCC2);
+	HAL_NVIC_SetPriority(DMA2_Stream2_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ(DMA2_Stream2_IRQn);
+	HAL_DMA_Start_IT(&dmaCC2, (uint32_t)WS2812_IO_Low, (uint32_t)&WS2812B_Port->BSRR, BUFFER_SIZE);
+}
+
+/*-----------------------------------------------------------------------*/
+/*---------------------------Pixel Startup End----------------------------*/
+/*-----------------------------------------------------------------------*/
+

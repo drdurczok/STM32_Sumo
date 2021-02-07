@@ -10,9 +10,20 @@
 
 #include <stm32_config.hpp>
 
+
+extern "C" {
+	#include <ws2812b.h>
+}
+
+
 void STM32_run();
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *);
+
+void ws2812b_handle();
+void DMA_TransferCompleteHandler(DMA_HandleTypeDef *DmaHandle);
+void DMA_TransferHalfHandler(DMA_HandleTypeDef *DmaHandle);
+void DMA_TransferError(DMA_HandleTypeDef *DmaHandle);
 
 void Error_Handler(void);
 
