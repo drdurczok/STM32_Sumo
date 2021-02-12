@@ -5,6 +5,8 @@
 
 void PixelsInit();
 
+void pixels_startup();
+
 void blinkHandle(uint8_t, uint8_t, uint8_t);
 void wheelHandle(uint8_t, uint8_t, uint8_t);
 void loadHandle(uint8_t, uint8_t, uint8_t);

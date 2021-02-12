@@ -27,7 +27,6 @@ void STM32_init(){
 	MX_USART6_UART_Init();
 
 	WS2812B_init();
-	PixelsInit();
 }
 
 void SystemClock_Config(void){
@@ -147,6 +146,7 @@ void WS2812B_init(){
 	DMA2_init();
 	TIM1_init();
 
+	PixelsInit();
 }
 
 void Pixel_GPIO_Init(void){

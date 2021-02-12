@@ -13,6 +13,39 @@ uint8_t prev_pixel = WS2812B_NUMBER_OF_LEDS;
 uint8_t current_pixel = 0;
 uint8_t next_pixel = 1;
 
+void pixels_startup(){
+	/*
+	blinkHandle(0,127,0);
+	HAL_Delay(1000);
+	blinkHandle(127,0,0);
+	HAL_Delay(1000);
+	blinkHandle(0,0,127);
+	HAL_Delay(1000);
+	*/
+
+	for (uint8_t k = 0; k < 5; k++){
+		for(uint8_t i = 0; i < 8; i++){
+			HAL_Delay(75);
+			wheelHandle(127,100,100);
+		}
+	}
+
+	HAL_Delay(75);
+	clearHandle();
+
+	for(uint8_t i = 0; i < 8; i++){
+		HAL_Delay(75);
+		loadHandle(50,100,127);
+	}
+	HAL_Delay(1000);
+	for(uint8_t i = 0; i < 8; i++){
+		HAL_Delay(75);
+		loadHandle(0,0,0);
+	}
+	HAL_Delay(75);
+
+}
+
 void clear_pixels(){
 	for (uint8_t i = 0; i < WS2812B_NUMBER_OF_LEDS; i++){
 		frameBuffer[i*3 + 0] = 0;

@@ -24,8 +24,6 @@ void STM32_run(){
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 	if (huart->Instance == USART2){
 		HAL_UART_Receive_IT(&huart2, &UART2_Message, 1);
-		uint8_t UART = '3';
-		HAL_UART_Transmit(&huart2, &UART, 1, 1000);
 	}
 	else if (huart->Instance == USART6){
 		HAL_UART_Receive_IT(&huart6, &UART6_Message, 1);
