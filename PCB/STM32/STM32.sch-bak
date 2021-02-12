@@ -893,7 +893,7 @@ Text GLabel 8600 4100 0    50   Input ~ 0
 PC9
 Wire Wire Line
 	8750 4100 8600 4100
-Text Notes 1150 5300 0    50   ~ 0
+Text Notes 750  5350 0    50   ~ 0
 LED
 $Comp
 L power:GND #PWR0108
@@ -1066,19 +1066,6 @@ F 3 "" H 6400 6550 50  0001 C CNN
 	1    6400 6550
 	1    0    0    -1  
 $EndComp
-$Comp
-L Device:R_Small R1
-U 1 1 602621F6
-P 2650 5700
-F 0 "R1" V 2454 5700 50  0000 C CNN
-F 1 "10k" V 2545 5700 50  0000 C CNN
-F 2 "Resistor_SMD:R_0805_2012Metric" H 2650 5700 50  0001 C CNN
-F 3 "~" H 2650 5700 50  0001 C CNN
-	1    2650 5700
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	1700 5300 1600 5300
 Wire Wire Line
 	1000 6950 1100 6950
 $Comp
@@ -1219,94 +1206,42 @@ Wire Wire Line
 Wire Wire Line
 	1400 6150 2850 6150
 $Comp
-L Isolator:LTV-356T U1
-U 1 1 6006409C
-P 2200 5400
-F 0 "U1" H 2200 5725 50  0000 C CNN
-F 1 "LTV-356T" H 2200 5634 50  0000 C CNN
-F 2 "Package_SO:SO-4_4.4x3.6mm_P2.54mm" H 2000 5200 50  0001 L CIN
-F 3 "http://optoelectronics.liteon.com/upload/download/DS70-2001-010/S_110_LTV-356T%2020140520.pdf" H 2200 5400 50  0001 L CNN
-	1    2200 5400
-	1    0    0    -1  
-$EndComp
-$Comp
 L power:+5V #PWR0104
 U 1 1 600A91BE
-P 2750 5300
-F 0 "#PWR0104" H 2750 5150 50  0001 C CNN
-F 1 "+5V" H 2765 5473 50  0000 C CNN
-F 2 "" H 2750 5300 50  0001 C CNN
-F 3 "" H 2750 5300 50  0001 C CNN
-	1    2750 5300
-	0    1    1    0   
+P 1900 5000
+F 0 "#PWR0104" H 1900 4850 50  0001 C CNN
+F 1 "+5V" H 1915 5173 50  0000 C CNN
+F 2 "" H 1900 5000 50  0001 C CNN
+F 3 "" H 1900 5000 50  0001 C CNN
+	1    1900 5000
+	1    0    0    -1  
 $EndComp
-$Comp
-L power:GND #PWR0112
-U 1 1 600DE4CC
-P 3050 5850
-F 0 "#PWR0112" H 3050 5600 50  0001 C CNN
-F 1 "GND" V 3055 5722 50  0000 R CNN
-F 2 "" H 3050 5850 50  0001 C CNN
-F 3 "" H 3050 5850 50  0001 C CNN
-	1    3050 5850
-	0    -1   -1   0   
-$EndComp
-Wire Wire Line
-	2650 5850 2650 5800
 $Comp
 L Device:R_Small R3
 U 1 1 60107FAF
-P 1800 5300
-F 0 "R3" V 1604 5300 50  0000 C CNN
-F 1 "220R" V 1695 5300 50  0000 C CNN
-F 2 "Resistor_SMD:R_0805_2012Metric" H 1800 5300 50  0001 C CNN
-F 3 "~" H 1800 5300 50  0001 C CNN
-	1    1800 5300
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR0113
-U 1 1 60123ABC
-P 1800 5600
-F 0 "#PWR0113" H 1800 5350 50  0001 C CNN
-F 1 "GND" V 1805 5472 50  0000 R CNN
-F 2 "" H 1800 5600 50  0001 C CNN
-F 3 "" H 1800 5600 50  0001 C CNN
-	1    1800 5600
+P 1200 5200
+F 0 "R3" V 1004 5200 50  0000 C CNN
+F 1 "10K" V 1095 5200 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" H 1200 5200 50  0001 C CNN
+F 3 "~" H 1200 5200 50  0001 C CNN
+	1    1200 5200
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	1800 5600 1800 5500
-Wire Wire Line
-	1800 5500 1900 5500
-Text GLabel 3050 5500 2    50   Input ~ 0
+Text GLabel 2200 5400 2    50   Input ~ 0
 LED
 Text GLabel 1000 6950 0    50   Input ~ 0
 LED
 $Comp
 L Device:R_Small R4
 U 1 1 6015A157
-P 2850 5500
-F 0 "R4" V 2654 5500 50  0000 C CNN
-F 1 "0R" V 2745 5500 50  0000 C CNN
-F 2 "Resistor_SMD:R_0805_2012Metric" H 2850 5500 50  0001 C CNN
-F 3 "~" H 2850 5500 50  0001 C CNN
-	1    2850 5500
-	0    -1   -1   0   
+P 1900 5200
+F 0 "R4" V 1704 5200 50  0000 C CNN
+F 1 "10K" V 1795 5200 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" H 1900 5200 50  0001 C CNN
+F 3 "~" H 1900 5200 50  0001 C CNN
+	1    1900 5200
+	-1   0    0    1   
 $EndComp
-Wire Wire Line
-	2950 5500 3050 5500
-Wire Wire Line
-	2500 5500 2650 5500
-Wire Wire Line
-	3050 5850 2650 5850
-Wire Wire Line
-	2650 5600 2650 5500
-Connection ~ 2650 5500
-Wire Wire Line
-	2650 5500 2750 5500
-Wire Wire Line
-	2500 5300 2750 5300
 Text GLabel 8750 6000 0    50   Input ~ 0
 RESET
 Wire Wire Line
@@ -1320,51 +1255,40 @@ Wire Notes Line
 Wire Notes Line
 	9500 5450 9500 6150
 $Comp
-L Regulator_Linear:MIC5205-5.0YM5 U2
-U 1 1 5FF9ABCA
-P 4950 1200
-F 0 "U2" H 4950 1449 50  0000 C CNN
-F 1 "MIC5205-5.0YM5" H 4950 1540 50  0000 C CNN
-F 2 "Package_TO_SOT_SMD:SOT-23-5" H 4950 1525 50  0001 C CNN
-F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/20005785A.pdf" H 4950 1200 50  0001 C CNN
-	1    4950 1200
-	1    0    0    -1  
-$EndComp
-$Comp
 L Device:C_Small C14
 U 1 1 5FFBA89D
-P 5600 1350
-F 0 "C14" H 5692 1396 50  0000 L CNN
-F 1 "100nF" H 5692 1305 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0805_2012Metric" H 5600 1350 50  0001 C CNN
-F 3 "~" H 5600 1350 50  0001 C CNN
-	1    5600 1350
+P 5350 1350
+F 0 "C14" H 5442 1396 50  0000 L CNN
+F 1 "100nF" H 5442 1305 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0805_2012Metric" H 5350 1350 50  0001 C CNN
+F 3 "~" H 5350 1350 50  0001 C CNN
+	1    5350 1350
 	1    0    0    -1  
 $EndComp
 $Comp
 L Device:LED_Small_ALT D11
 U 1 1 5FFC9D5F
-P 6150 1300
-F 0 "D11" V 6196 1232 50  0000 R CNN
-F 1 "Power_On" V 6105 1232 50  0000 R CNN
-F 2 "LED_SMD:LED_1206_3216Metric" V 6150 1300 50  0001 C CNN
-F 3 "~" V 6150 1300 50  0001 C CNN
-	1    6150 1300
+P 5900 1300
+F 0 "D11" V 5946 1232 50  0000 R CNN
+F 1 "Power_On" V 5855 1232 50  0000 R CNN
+F 2 "LED_SMD:LED_1206_3216Metric" V 5900 1300 50  0001 C CNN
+F 3 "~" V 5900 1300 50  0001 C CNN
+	1    5900 1300
 	0    -1   -1   0   
 $EndComp
 $Comp
 L Device:R_Small R5
 U 1 1 5FFC9D65
-P 6000 1550
-F 0 "R5" V 5804 1550 50  0000 C CNN
-F 1 "RLed" V 5895 1550 50  0000 C CNN
-F 2 "Resistor_SMD:R_0805_2012Metric" H 6000 1550 50  0001 C CNN
-F 3 "~" H 6000 1550 50  0001 C CNN
-	1    6000 1550
+P 5750 1550
+F 0 "R5" V 5554 1550 50  0000 C CNN
+F 1 "RLed" V 5645 1550 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" H 5750 1550 50  0001 C CNN
+F 3 "~" H 5750 1550 50  0001 C CNN
+	1    5750 1550
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	6150 1550 6100 1550
+	5900 1550 5850 1550
 $Comp
 L power:GND #PWR0102
 U 1 1 60054FC3
@@ -1398,24 +1322,12 @@ Wire Notes Line
 Wire Notes Line
 	650  650  2000 650 
 Text Notes 700  850  0    50   ~ 0
-Input Power Supply Filter\n<16V
+Input Power Supply Filter\n7-16V
 Text GLabel 4200 1150 3    50   Input ~ 0
 V_Stable
 Wire Wire Line
-	4650 1100 4600 1100
-Wire Wire Line
-	4650 1200 4600 1200
-Wire Wire Line
-	4600 1200 4600 1100
-Connection ~ 4600 1100
-Wire Wire Line
-	4600 1100 4550 1100
-Wire Wire Line
-	5600 1550 5400 1550
-Wire Wire Line
 	2650 1550 2800 1550
 Connection ~ 2800 1550
-Connection ~ 5400 1550
 $Comp
 L power:GND #PWR0111
 U 1 1 6025CBAA
@@ -1430,17 +1342,9 @@ $EndComp
 Wire Wire Line
 	4900 1550 4950 1550
 Wire Wire Line
-	4950 1500 4950 1550
-Connection ~ 4950 1550
+	5350 1450 5350 1550
 Wire Wire Line
-	4950 1550 5400 1550
-Wire Wire Line
-	5400 1450 5400 1550
-Wire Wire Line
-	5600 1450 5600 1550
-Wire Wire Line
-	5900 1550 5600 1550
-Connection ~ 5600 1550
+	5650 1550 5350 1550
 $Comp
 L power:+3.3V #PWR0116
 U 1 1 602F1495
@@ -1455,12 +1359,12 @@ $EndComp
 $Comp
 L power:+5V #PWR0117
 U 1 1 602F1F58
-P 6150 1000
-F 0 "#PWR0117" H 6150 850 50  0001 C CNN
-F 1 "+5V" H 6165 1173 50  0000 C CNN
-F 2 "" H 6150 1000 50  0001 C CNN
-F 3 "" H 6150 1000 50  0001 C CNN
-	1    6150 1000
+P 5900 1000
+F 0 "#PWR0117" H 5900 850 50  0001 C CNN
+F 1 "+5V" H 5915 1173 50  0000 C CNN
+F 2 "" H 5900 1000 50  0001 C CNN
+F 3 "" H 5900 1000 50  0001 C CNN
+	1    5900 1000
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
@@ -1500,43 +1404,20 @@ F 3 "" H 8250 5250 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 Wire Wire Line
-	5250 1100 5400 1100
+	5900 1000 5900 1100
 Wire Wire Line
-	6150 1000 6150 1100
+	5350 1100 5350 1250
 Wire Wire Line
-	5600 1100 5600 1250
-Connection ~ 5600 1100
+	5350 1100 5900 1100
 Wire Wire Line
-	5600 1100 6150 1100
+	5900 1200 5900 1100
+Connection ~ 5900 1100
 Wire Wire Line
-	5400 1100 5400 1250
-Connection ~ 5400 1100
-Wire Wire Line
-	5400 1100 5600 1100
-$Comp
-L Device:CP1_Small C3
-U 1 1 5FFAC280
-P 5400 1350
-F 0 "C3" H 5159 1396 50  0000 L CNN
-F 1 "10uF" H 5159 1305 50  0000 L TNN
-F 2 "Capacitor_Tantalum_SMD:CP_EIA-3216-18_Kemet-A" H 5400 1350 50  0001 C CNN
-F 3 "~" H 5400 1350 50  0001 C CNN
-	1    5400 1350
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	6150 1200 6150 1100
-Connection ~ 6150 1100
-Wire Wire Line
-	6150 1400 6150 1550
+	5900 1400 5900 1550
 Text Notes 4100 850  0    50   ~ 0
-Power Supply\n5V, 150mA
+Power Supply\n5V, 500mA
 Wire Notes Line
-	4050 650  6600 650 
-Wire Notes Line
-	6600 1700 4050 1700
-Wire Notes Line
-	6600 650  6600 1700
+	6400 650  6400 1700
 Wire Notes Line
 	4050 650  4050 1700
 $Comp
@@ -1630,6 +1511,99 @@ Text Notes 5750 3150 0    50   ~ 0
 UART2_TX
 Text Notes 7050 3150 0    50   ~ 0
 UART6_TX
-Text GLabel 1600 5300 0    50   Input ~ 0
+Text GLabel 1000 5400 0    50   Input ~ 0
 PB7
+$Comp
+L Transistor_FET:BSS138 Q?
+U 1 1 60273EE0
+P 1550 5300
+F 0 "Q?" V 1799 5300 50  0000 C CNN
+F 1 "BSS138" V 1890 5300 50  0000 C CNN
+F 2 "Package_TO_SOT_SMD:SOT-23" H 1750 5225 50  0001 L CIN
+F 3 "https://www.onsemi.com/pub/Collateral/BSS138-D.PDF" H 1550 5300 50  0001 L CNN
+	1    1550 5300
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+3.3V #PWR?
+U 1 1 602E0619
+P 1200 5000
+F 0 "#PWR?" H 1200 4850 50  0001 C CNN
+F 1 "+3.3V" H 1215 5173 50  0000 C CNN
+F 2 "" H 1200 5000 50  0001 C CNN
+F 3 "" H 1200 5000 50  0001 C CNN
+	1    1200 5000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1200 5000 1200 5050
+Wire Wire Line
+	1550 5100 1550 5050
+Wire Wire Line
+	1550 5050 1200 5050
+Connection ~ 1200 5050
+Wire Wire Line
+	1200 5050 1200 5100
+Wire Wire Line
+	1000 5400 1200 5400
+Wire Wire Line
+	1200 5300 1200 5400
+Connection ~ 1200 5400
+Wire Wire Line
+	1200 5400 1350 5400
+Wire Wire Line
+	1750 5400 1900 5400
+Wire Wire Line
+	1900 5300 1900 5400
+Connection ~ 1900 5400
+Wire Wire Line
+	1900 5400 2200 5400
+Wire Wire Line
+	1900 5100 1900 5000
+Wire Notes Line
+	700  4700 2500 4700
+Wire Notes Line
+	2500 4700 2500 5700
+Wire Notes Line
+	2500 5700 700  5700
+Wire Notes Line
+	700  5700 700  4700
+Text Notes 750  4800 0    50   ~ 0
+Level Shifter
+Wire Notes Line
+	700  5750 6900 5750
+Wire Notes Line
+	6900 5750 6900 7700
+Wire Notes Line
+	6900 7700 700  7700
+Wire Notes Line
+	700  7700 700  5750
+Text Notes 750  5850 0    50   ~ 0
+LED Array
+$Comp
+L Regulator_Linear:L7805 U?
+U 1 1 602E75BB
+P 4950 1100
+F 0 "U?" H 4950 1342 50  0000 C CNN
+F 1 "L7805" H 4950 1251 50  0000 C CNN
+F 2 "" H 4975 950 50  0001 L CIN
+F 3 "http://www.st.com/content/ccc/resource/technical/document/datasheet/41/4f/b3/b0/12/d4/47/88/CD00000444.pdf/files/CD00000444.pdf/jcr:content/translations/en.CD00000444.pdf" H 4950 1050 50  0001 C CNN
+	1    4950 1100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4550 1100 4650 1100
+Wire Wire Line
+	4950 1400 4950 1550
+Wire Wire Line
+	5350 1100 5250 1100
+Connection ~ 5350 1100
+Wire Wire Line
+	5350 1550 4950 1550
+Connection ~ 5350 1550
+Connection ~ 4950 1550
+Wire Notes Line
+	4050 650  6400 650 
+Wire Notes Line
+	6400 1700 4050 1700
 $EndSCHEMATC
