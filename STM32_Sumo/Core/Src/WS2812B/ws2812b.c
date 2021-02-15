@@ -31,7 +31,7 @@ const uint8_t gammaTable[] = {
   177,180,182,184,186,189,191,193,196,198,200,203,205,208,210,213,
   215,218,220,223,225,228,231,233,236,239,241,244,247,249,252,255 };
 
-TIM_HandleTypeDef    TIM1_handle;
+TIM_HandleTypeDef  TIM1_handle;
 TIM_OC_InitTypeDef tim2OC1;
 TIM_OC_InitTypeDef tim2OC2;
 
@@ -42,7 +42,7 @@ uint32_t timer_reset_pulse_period;
 DMA_HandleTypeDef     dmaUpdate;
 DMA_HandleTypeDef     dmaCC1;
 DMA_HandleTypeDef     dmaCC2;
-#define BUFFER_SIZE		(sizeof(ws2812bDmaBitBuffer)/sizeof(uint16_t))
+#define BUFFER_SIZE	  (sizeof(ws2812bDmaBitBuffer)/sizeof(uint16_t))
 
 
 
@@ -127,7 +127,7 @@ void DMA_TransferHalfHandler(DMA_HandleTypeDef *DmaHandle){
 
 void DMA_TransferCompleteHandler(DMA_HandleTypeDef *DmaHandle){
 	if(ws2812b.repeatCounter == WS2812B_NUMBER_OF_LEDS){
-		// Transfer of all LEDs is done, disable DMA but enable tiemr update IRQ to stop the 50us pulse
+		// Transfer of all LEDs is done, disable DMA but enable tiere update IRQ to stop the 50us pulse
 		ws2812b.repeatCounter = 0;
 
 		// Stop timer

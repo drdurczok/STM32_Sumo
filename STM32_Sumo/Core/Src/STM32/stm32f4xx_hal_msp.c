@@ -114,3 +114,4 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* huart){
     HAL_NVIC_DisableIRQ(USART6_IRQn);
   }
 }
+

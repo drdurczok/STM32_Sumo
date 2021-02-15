@@ -14,8 +14,8 @@ int main(void) {
 
 	uint8_t UART = '5';
 	while(1){
-		HAL_UART_Transmit(&huart2, &UART, 1, 1000);
-		HAL_Delay(2000);
+		//HAL_UART_Transmit(&huart2, &UART, 1, 1000);
+		//HAL_Delay(2000);
 
 	}
 }

@@ -26,7 +26,10 @@ void STM32_init(){
 	MX_USART2_UART_Init();
 	MX_USART6_UART_Init();
 
+	Sensors_init();
 	WS2812B_init();
+
+	Sensors_run();
 }
 
 void SystemClock_Config(void){
@@ -39,12 +42,6 @@ void SystemClock_Config(void){
 
 	// Initializes the RCC Oscillators according to the specified parameters
 	// in the RCC_OscInitTypeDef structure.
-	/*
-	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-	RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-	RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;*/
-
 	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
 	RCC_OscInitStruct.HSIState = RCC_HSI_ON;
 	RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
@@ -82,7 +79,6 @@ void MX_GPIO_Init(void){
 	//__HAL_RCC_GPIOC_CLK_ENABLE();
 
 }
-
 
 void MX_USART1_UART_Init(void){
 	huart1.Instance = USART1;
@@ -125,6 +121,182 @@ void MX_USART6_UART_Init(void){
 		Error_Handler();
 	}
 }
+
+/*-----------------------------------------------------------------------*/
+/*---------------------------Sensors Startup-----------------------------*/
+/*-----------------------------------------------------------------------*/
+
+
+ADC_HandleTypeDef hadc1;				// ADC for CNY70 sensor.
+DMA_HandleTypeDef hdma_adc1;			// DMA for ADC.
+
+CNY70 FR = CNY70(0, 2000);					// ADC CHANNEL 7
+CNY70 FL = CNY70(1, 2000);					// ADC CHANNEL 13
+CNY70 RR = CNY70(2, 2000);					// ADC CHANNEL 9
+CNY70 RL = CNY70(3, 2000);					// ADC CHANNEL 12
+
+SHARP1080  FR_Sharp = SHARP1080(4);			// ADC CHANNEL 14
+SHARP20150 FM_Sharp = SHARP20150(5);		// ADC CHANNEL 9
+SHARP1080  FL_Sharp = SHARP1080(6);			// ADC CHANNEL 8
+
+const uint8_t NUMBER_OF_USED_DMA_SENSORS = 7;				// Number of used sensors with DMA handling.
+uint16_t sensors_values[NUMBER_OF_USED_DMA_SENSORS];		// Array with all ADC sensors  CNY70 [3,4,5,6] SHARP 20150 [1] SHARP1080 [0,2]
+
+void Sensors_GPIO_Init(void);
+void Sensors_ADC1_Init(void);
+void Sensors_DMA2_Init(void);
+
+void Sensors_init(){
+	Sensors_GPIO_Init();
+	Sensors_ADC1_Init();
+	Sensors_DMA2_Init();
+}
+
+void Sensors_run(){
+	HAL_ADC_Start_DMA(&hadc1, (uint32_t*) sensors_values, NUMBER_OF_USED_DMA_SENSORS);		// Start ADC with DMA support.
+}
+
+void Sensors_GPIO_Init(){
+	 GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+	/* Peripheral clock enable */
+	__HAL_RCC_ADC1_CLK_ENABLE();
+
+	__HAL_RCC_GPIOA_CLK_ENABLE();
+	__HAL_RCC_GPIOB_CLK_ENABLE();
+	__HAL_RCC_GPIOC_CLK_ENABLE();
+
+
+	GPIO_InitStruct.Pin = GPIO_PIN_7;
+	GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+	GPIO_InitStruct.Pin = GPIO_PIN_0 | GPIO_PIN_1;
+	GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+	GPIO_InitStruct.Pin = GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5;
+	GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+}
+
+void Sensors_ADC1_Init(void){
+	ADC_ChannelConfTypeDef sConfig = { 0 };
+
+	/**Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
+	 */
+	hadc1.Instance = ADC1;
+	hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV8;
+	hadc1.Init.Resolution = ADC_RESOLUTION_12B;
+	hadc1.Init.ScanConvMode = ENABLE;
+	hadc1.Init.ContinuousConvMode = ENABLE;
+	hadc1.Init.DiscontinuousConvMode = DISABLE;
+	hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
+	hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+	hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
+	hadc1.Init.NbrOfConversion = 7;
+	hadc1.Init.DMAContinuousRequests = ENABLE;
+	hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
+	if (HAL_ADC_Init(&hadc1) != HAL_OK) {
+		Error_Handler();
+	}
+
+
+//*****************  SHARP FRONT LEFT      -  PB0 - Pin 26 - ADC1_8  ******************************************************************************
+	sConfig.Channel = ADC_CHANNEL_8;
+	sConfig.Rank = 5;
+	sConfig.SamplingTime = ADC_SAMPLETIME_480CYCLES;
+	if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK) {
+		Error_Handler();
+	}
+//*****************  SHARP FRONT RIGHT     -  PC4 - Pin 24 - ADC1_14 ******************************************************************************
+	sConfig.Channel = ADC_CHANNEL_14;
+	sConfig.Rank = 6;
+	sConfig.SamplingTime = ADC_SAMPLETIME_480CYCLES;
+	if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK) {
+		Error_Handler();
+	}
+//*****************  SHARP FRONT MIDDLE    -  PC5 - Pin 27 - ADC1_9	 ******************************************************************************
+	sConfig.Channel = ADC_CHANNEL_9;
+	sConfig.Rank = 7;
+	sConfig.SamplingTime = ADC_SAMPLETIME_480CYCLES;
+	if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK) {
+		Error_Handler();
+	}
+//*****************  SHARP REAR MIDDLE     -  PA6 - Pin 22 - ADC1_6  ******************************************************************************
+	sConfig.Channel = ADC_CHANNEL_6;
+	sConfig.Rank = 8;
+	sConfig.SamplingTime = ADC_SAMPLETIME_480CYCLES;
+	if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK) {
+		Error_Handler();
+	}
+
+
+//*****************  CNY70 FRONT RIGHT FR  -  PA7 - Pin 23 - ADC1_7  ******************************************************************************
+	sConfig.Channel = ADC_CHANNEL_7;
+	sConfig.Rank = 1;
+	sConfig.SamplingTime = ADC_SAMPLETIME_480CYCLES;
+	if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK) {
+		Error_Handler();
+	}
+//*****************  CNY70 FRONT LEFT  FL  -  PC3 - Pin 11 - ADC1_13 ******************************************************************************
+	sConfig.Channel = ADC_CHANNEL_13;
+	sConfig.Rank = 2;
+	sConfig.SamplingTime = ADC_SAMPLETIME_480CYCLES;
+	if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK) {
+		Error_Handler();
+	}
+
+//*****************  CNY70 REAR RIGHT  RR  -  PB1 - Pin 27 - ADC1_9  ******************************************************************************
+	sConfig.Channel = ADC_CHANNEL_9;
+	sConfig.Rank = 3;
+	sConfig.SamplingTime = ADC_SAMPLETIME_480CYCLES;
+	if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK) {
+		Error_Handler();
+	}
+//*****************  CNY70 REAR LEFT   RL  -  PC2 - Pin 10 - ADC1_12 ******************************************************************************
+	sConfig.Channel = ADC_CHANNEL_12;
+	sConfig.Rank = 4;
+	sConfig.SamplingTime = ADC_SAMPLETIME_480CYCLES;
+	if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK) {
+		Error_Handler();
+	}
+}
+
+void Sensors_DMA2_Init(void){
+	/* DMA controller clock enable */
+	__HAL_RCC_DMA2_CLK_ENABLE();
+
+	/* ADC1 DMA Init */
+	hdma_adc1.Instance = DMA2_Stream0;
+	hdma_adc1.Init.Channel = DMA_CHANNEL_0;
+	hdma_adc1.Init.Direction = DMA_PERIPH_TO_MEMORY;
+	hdma_adc1.Init.PeriphInc = DMA_PINC_DISABLE;
+	hdma_adc1.Init.MemInc = DMA_MINC_ENABLE;
+	hdma_adc1.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
+	hdma_adc1.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
+	hdma_adc1.Init.Mode = DMA_CIRCULAR;
+	hdma_adc1.Init.Priority = DMA_PRIORITY_LOW;
+	hdma_adc1.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
+	if (HAL_DMA_Init(&hdma_adc1) != HAL_OK){
+	  //Error_Handler();
+	}
+
+	__HAL_LINKDMA(&hadc1,DMA_Handle,hdma_adc1);
+
+	/* DMA2_Stream0_IRQn interrupt configuration */
+	HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ(DMA2_Stream0_IRQn);
+}
+
+
+/*-----------------------------------------------------------------------*/
+/*---------------------------Sensors End---------------------------------*/
+/*-----------------------------------------------------------------------*/
+
 
 /*-----------------------------------------------------------------------*/
 /*---------------------------Pixel Startup-------------------------------*/

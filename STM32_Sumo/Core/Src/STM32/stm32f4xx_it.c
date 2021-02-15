@@ -24,6 +24,14 @@ void USART6_IRQHandler(void){
   HAL_UART_IRQHandler(&huart6);
 }
 
+extern DMA_HandleTypeDef hdma_adc1;			// DMA for ADC.
+
+// DMA from ADC
+void DMA2_Stream0_IRQHandler(void){
+	HAL_DMA_IRQHandler(&hdma_adc1);
+}
+
+
 /******************************************************************************/
 /*           Cortex-M4 Processor Interruption and Exception Handlers          */
 /******************************************************************************/
