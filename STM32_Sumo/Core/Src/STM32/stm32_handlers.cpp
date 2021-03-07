@@ -15,10 +15,14 @@ uint8_t UART1_Message;
 uint8_t UART2_Message;
 uint8_t UART6_Message;
 
+extern void Sensors_run(void);
+
 void STM32_run(){
 	HAL_UART_Receive_IT(&huart2, &UART2_Message, 1);			// Start UART interrupt - feedback from ESC.
 	HAL_UART_Receive_IT(&huart6, &UART6_Message, 1);			// Start UART interrupt - feedback from ESC.
 	HAL_UART_Receive_IT(&huart1, &UART1_Message, 1);
+
+	Sensors_run();
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){

@@ -28,8 +28,6 @@ void STM32_init(){
 
 	Sensors_init();
 	WS2812B_init();
-
-	Sensors_run();
 }
 
 void SystemClock_Config(void){
@@ -126,7 +124,6 @@ void MX_USART6_UART_Init(void){
 /*---------------------------Sensors Startup-----------------------------*/
 /*-----------------------------------------------------------------------*/
 
-
 ADC_HandleTypeDef hadc1;				// ADC for CNY70 sensor.
 DMA_HandleTypeDef hdma_adc1;			// DMA for ADC.
 
@@ -139,7 +136,7 @@ SHARP1080  FR_Sharp = SHARP1080(4);			// ADC CHANNEL 14
 SHARP20150 FM_Sharp = SHARP20150(5);		// ADC CHANNEL 9
 SHARP1080  FL_Sharp = SHARP1080(6);			// ADC CHANNEL 8
 
-const uint8_t NUMBER_OF_USED_DMA_SENSORS = 7;				// Number of used sensors with DMA handling.
+const uint8_t NUMBER_OF_USED_DMA_SENSORS = 8;				// Number of used sensors with DMA handling.
 uint16_t sensors_values[NUMBER_OF_USED_DMA_SENSORS];		// Array with all ADC sensors  CNY70 [3,4,5,6] SHARP 20150 [1] SHARP1080 [0,2]
 
 void Sensors_GPIO_Init(void);
@@ -197,7 +194,7 @@ void Sensors_ADC1_Init(void){
 	hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
 	hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
 	hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-	hadc1.Init.NbrOfConversion = 7;
+	hadc1.Init.NbrOfConversion = 8;
 	hadc1.Init.DMAContinuousRequests = ENABLE;
 	hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
 	if (HAL_ADC_Init(&hadc1) != HAL_OK) {
@@ -219,8 +216,8 @@ void Sensors_ADC1_Init(void){
 	if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK) {
 		Error_Handler();
 	}
-//*****************  SHARP FRONT MIDDLE    -  PC5 - Pin 27 - ADC1_9	 ******************************************************************************
-	sConfig.Channel = ADC_CHANNEL_9;
+//*****************  SHARP FRONT MIDDLE    -  PC5 - Pin 27 - ADC1_15	 ******************************************************************************
+	sConfig.Channel = ADC_CHANNEL_15;
 	sConfig.Rank = 7;
 	sConfig.SamplingTime = ADC_SAMPLETIME_480CYCLES;
 	if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK) {
