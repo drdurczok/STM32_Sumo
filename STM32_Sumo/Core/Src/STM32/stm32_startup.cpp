@@ -80,7 +80,7 @@ void MX_GPIO_Init(void){
 
 void MX_USART1_UART_Init(void){
 	huart1.Instance = USART1;
-	huart1.Init.BaudRate = 38400*16/84;
+	huart1.Init.BaudRate = 115200; //For Bluetooth use: 38400*16/84
 	huart1.Init.WordLength = UART_WORDLENGTH_8B;
 	huart1.Init.StopBits = UART_STOPBITS_1;
 	huart1.Init.Parity = UART_PARITY_NONE;
@@ -132,11 +132,7 @@ CNY70 FL = CNY70(1, 2000);					// ADC CHANNEL 13
 CNY70 RR = CNY70(2, 2000);					// ADC CHANNEL 9
 CNY70 RL = CNY70(3, 2000);					// ADC CHANNEL 12
 
-SHARP1080  FR_Sharp = SHARP1080(4);			// ADC CHANNEL 14
-SHARP20150 FM_Sharp = SHARP20150(5);		// ADC CHANNEL 9
-SHARP1080  FL_Sharp = SHARP1080(6);			// ADC CHANNEL 8
-
-const uint8_t NUMBER_OF_USED_DMA_SENSORS = 8;				// Number of used sensors with DMA handling.
+#define NUMBER_OF_USED_DMA_SENSORS 7						// Number of used sensors with DMA handling.
 uint16_t sensors_values[NUMBER_OF_USED_DMA_SENSORS];		// Array with all ADC sensors  CNY70 [3,4,5,6] SHARP 20150 [1] SHARP1080 [0,2]
 
 void Sensors_GPIO_Init(void);
@@ -194,7 +190,7 @@ void Sensors_ADC1_Init(void){
 	hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
 	hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
 	hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-	hadc1.Init.NbrOfConversion = 8;
+	hadc1.Init.NbrOfConversion = NUMBER_OF_USED_DMA_SENSORS;
 	hadc1.Init.DMAContinuousRequests = ENABLE;
 	hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
 	if (HAL_ADC_Init(&hadc1) != HAL_OK) {
@@ -224,13 +220,14 @@ void Sensors_ADC1_Init(void){
 		Error_Handler();
 	}
 //*****************  SHARP REAR MIDDLE     -  PA6 - Pin 22 - ADC1_6  ******************************************************************************
+	/*
 	sConfig.Channel = ADC_CHANNEL_6;
 	sConfig.Rank = 8;
 	sConfig.SamplingTime = ADC_SAMPLETIME_480CYCLES;
 	if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK) {
 		Error_Handler();
 	}
-
+	*/
 
 //*****************  CNY70 FRONT RIGHT FR  -  PA7 - Pin 23 - ADC1_7  ******************************************************************************
 	sConfig.Channel = ADC_CHANNEL_7;
