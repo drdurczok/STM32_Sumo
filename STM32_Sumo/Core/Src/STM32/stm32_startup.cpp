@@ -13,7 +13,6 @@ UART_HandleTypeDef huart2;				// TX - PA2  RX - PA3
 UART_HandleTypeDef huart6;				// TX - PC6  RX - PC7
 UART_HandleTypeDef huart1;				// TX - PA9  RX - PA10
 
-
 void STM32_init(){
 	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
 	HAL_Init();

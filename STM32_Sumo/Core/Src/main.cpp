@@ -12,7 +12,7 @@ int main(void) {
 
 	pixels_startup();
 
-	HAL_Delay(10000);
+	HAL_Delay(5000);
 	while(1){
 		run();
 	}
@@ -25,12 +25,14 @@ int main(void) {
 #include "OpponentDetection.h"
 OpponentDetection opp = OpponentDetection();
 
+uint16_t oppDist;
+int16_t  oppAngle;
 void run(){
 	opp.calculateOpponentPosition();
 
 	uint16_t timestamp = 10;
-	uint16_t oppDist   = opp.getOpponentDistance();
-	int16_t  oppAngle  = opp.getOpponentAngle();
+	oppDist   = opp.getOpponentDistance();
+	oppAngle  = opp.getOpponentAngle();
 	std::string message = "ST" + std::to_string(timestamp)
 					   + "OD" + std::to_string(oppDist)
 					   + "OA" + std::to_string(oppAngle) + "E";

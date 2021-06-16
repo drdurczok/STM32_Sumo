@@ -8,7 +8,7 @@ private:
 
 public:
 	uint16_t *value;						// ADC DMA value
-	uint8_t ivalueMax = 200;
+	uint8_t ivalueMax = 100;
 	uint8_t  type; 							//	1 - returns true/false, 2 returns ADC value
 
 	uint16_t GetValue();
